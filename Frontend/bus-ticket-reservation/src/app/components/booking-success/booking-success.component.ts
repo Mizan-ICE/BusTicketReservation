@@ -14,6 +14,8 @@ export class BookingSuccessComponent implements OnInit {
   seatLabelsMap: Map<string, string> = new Map();
   loading = true;
   errorMessage = '';
+  successMessage = '';
+  cancellingTicketId: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -24,15 +26,13 @@ export class BookingSuccessComponent implements OnInit {
   ngOnInit(): void {
     // Check for navigation state with tickets (passed during navigation)
     const state = history.state;
-    console.log('Navigation state:', state);
     
     if (state && state.tickets && state.tickets.length > 0) {
       this.tickets = state.tickets;
       const labelsArray = state.seatLabelsMap || [];
       this.seatLabelsMap = new Map(labelsArray);
-      this.ticket = this.tickets[0];  // Set first ticket for backward compatibility
+      this.ticket = this.tickets[0];
       this.loading = false;
-      console.log('Loaded tickets from state:', this.tickets);
       return;
     }
 
@@ -110,5 +110,52 @@ export class BookingSuccessComponent implements OnInit {
       case 2: return 'status-cancelled';
       default: return '';
     }
+  }
+
+  cancelTicket(ticketId: string): void {
+    if (!confirm('Are you sure you want to cancel this ticket?')) {
+      return;
+    }
+
+    this.cancellingTicketId = ticketId;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    this.busService.cancelTicket(ticketId).subscribe({
+      next: () => {
+        this.successMessage = 'Ticket cancelled successfully!';
+        this.cancellingTicketId = null;
+        
+        // Update the ticket status in the tickets array
+        const ticketIndex = this.tickets.findIndex(t => t.id === ticketId);
+        if (ticketIndex !== -1) {
+          this.tickets[ticketIndex].status = 2; // Cancelled
+        }
+        
+        // Update main ticket if it's the one being cancelled
+        if (this.ticket?.id === ticketId) {
+          this.ticket.status = 2;
+        }
+
+        // Redirect to home after 3 seconds
+        setTimeout(() => {
+          this.router.navigate(['/']);
+        }, 3000);
+      },
+      error: (error) => {
+        console.error('Error cancelling ticket:', error);
+        this.errorMessage = error.message || 'Failed to cancel ticket. Please try again.';
+        this.cancellingTicketId = null;
+      }
+    });
+  }
+
+  canCancelTicket(ticket: any): boolean {
+    // Can only cancel tickets that are Pending (0) or Confirmed (1)
+    return ticket.status === 0 || ticket.status === 1;
+  }
+
+  isCancelling(ticketId: string): boolean {
+    return this.cancellingTicketId === ticketId;
   }
 }

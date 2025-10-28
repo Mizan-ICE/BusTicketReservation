@@ -42,33 +42,94 @@ export class BusSearchComponent implements OnInit {
       to: ['', Validators.required],
       journeyDate: [today, Validators.required]
     });
+
+    // Watch for changes to validate same city selection
+    this.searchForm.get('from')?.valueChanges.subscribe(() => {
+      this.validateCities();
+    });
+
+    this.searchForm.get('to')?.valueChanges.subscribe(() => {
+      this.validateCities();
+    });
+  }
+
+  validateCities(): void {
+    const from = this.searchForm.get('from')?.value;
+    const to = this.searchForm.get('to')?.value;
+    
+    if (from && to && from === to) {
+      this.searchForm.get('to')?.setErrors({ sameCity: true });
+    } else if (this.searchForm.get('to')?.errors?.['sameCity']) {
+      // Clear the sameCity error if cities are different now
+      const errors = this.searchForm.get('to')?.errors;
+      if (errors) {
+        delete errors['sameCity'];
+        const hasOtherErrors = Object.keys(errors).length > 0;
+        this.searchForm.get('to')?.setErrors(hasOtherErrors ? errors : null);
+      }
+    }
   }
 
   onSearch(): void {
-    if (this.searchForm.valid) {
-      this.loading = true;
-      this.errorMessage = '';
-      this.searched = true;
-      
-      const { from, to, journeyDate } = this.searchForm.value;
-
-      this.busService.searchBuses(from, to, journeyDate).subscribe({
-        next: (buses) => {
-          this.availableBuses = buses;
-          this.loading = false;
-          if (buses.length === 0) {
-            this.errorMessage = 'No buses found for the selected route and date.';
-          }
-        },
-        error: (error) => {
-          console.error('Search error:', error);
-          this.errorMessage = 'An error occurred while searching for buses. Please try again.';
-          this.loading = false;
-        }
-      });
-    } else {
+    if (this.searchForm.invalid) {
       this.markFormGroupTouched(this.searchForm);
+      this.errorMessage = this.getValidationError();
+      return;
     }
+
+    const { from, to, journeyDate } = this.searchForm.value;
+
+    // Additional validation
+    if (from === to) {
+      this.errorMessage = '❌ Departure and destination cities cannot be the same!';
+      return;
+    }
+
+    // Check if date is in the past
+    const selectedDate = new Date(journeyDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (selectedDate < today) {
+      this.errorMessage = '❌ Journey date cannot be in the past!';
+      return;
+    }
+
+    // Proceed with search
+    this.loading = true;
+    this.errorMessage = '';
+    this.searched = true;
+
+    this.busService.searchBuses(from, to, journeyDate).subscribe({
+      next: (buses) => {
+        this.availableBuses = buses;
+        this.loading = false;
+        if (buses.length === 0) {
+          this.errorMessage = `🚌 No buses found from ${from} to ${to} on ${this.formatDate(journeyDate)}.`;
+        }
+      },
+      error: (error) => {
+        console.error('Search error:', error);
+        this.errorMessage = '❌ An error occurred while searching for buses. Please try again.';
+        this.loading = false;
+      }
+    });
+  }
+
+  getValidationError(): string {
+    if (this.searchForm.get('from')?.invalid && this.searchForm.get('from')?.touched) {
+      return '❌ Please select a departure city';
+    }
+    if (this.searchForm.get('to')?.invalid && this.searchForm.get('to')?.touched) {
+      if (this.searchForm.get('to')?.errors?.['sameCity']) {
+        return '❌ Departure and destination cities cannot be the same!';
+      }
+      return '❌ Please select a destination city';
+    }
+    if (this.searchForm.get('journeyDate')?.invalid && this.searchForm.get('journeyDate')?.touched) {
+      return '❌ Please select a journey date';
+    }
+    return '❌ Please fill in all required fields';
   }
 
   viewSeats(busScheduleId: string): void {
@@ -82,6 +143,16 @@ export class BusSearchComponent implements OnInit {
     const ampm = hour >= 12 ? 'PM' : 'AM';
     const formattedHour = hour % 12 || 12;
     return `${formattedHour}:${minutes} ${ampm}`;
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      weekday: 'short', 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {

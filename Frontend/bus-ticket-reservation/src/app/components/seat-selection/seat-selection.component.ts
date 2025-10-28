@@ -62,62 +62,6 @@ export class SeatSelectionComponent implements OnInit {
     });
   }
 
-  getSeatLayout(): Seat[][] {
-    if (!this.busDetails || !this.busDetails.seats) return [];
-
-    const maxRow = Math.max(...this.busDetails.seats.map(s => s.row));
-    const maxCol = Math.max(...this.busDetails.seats.map(s => s.column));
-    
-    const layout: Seat[][] = [];
-    
-    for (let row = 1; row <= maxRow; row++) {
-      const rowSeats: Seat[] = [];
-      for (let col = 1; col <= maxCol; col++) {
-        const seat = this.busDetails.seats.find(s => s.row === row && s.column === col);
-        if (seat) {
-          rowSeats.push(seat);
-        }
-      }
-      if (rowSeats.length > 0) {
-        layout.push(rowSeats);
-      }
-    }
-    
-    return layout;
-  }
-
-  selectSeat(seat: Seat): void {
-    if (seat.status === SeatStatus.Available) {
-      this.selectedSeat = seat;
-      this.errorMessage = '';
-    }
-  }
-
-  getSeatClass(seat: Seat): string {
-    const classes = ['seat'];
-    
-    if (seat.status === SeatStatus.Available) {
-      classes.push('available');
-      if (this.selectedSeat?.id === seat.id) {
-        classes.push('selected');
-      }
-    } else if (seat.status === SeatStatus.Booked) {
-      classes.push('booked');
-    } else if (seat.status === SeatStatus.Sold) {
-      classes.push('sold');
-    }
-    
-    return classes.join(' ');
-  }
-
-  getSeatIcon(seat: Seat): string {
-    if (this.selectedSeat?.id === seat.id) return '?';
-    if (seat.status === SeatStatus.Available) return '??';
-    if (seat.status === SeatStatus.Booked) return '??';
-    if (seat.status === SeatStatus.Sold) return '?';
-    return '';
-  }
-
   onBookTicket(): void {
     if (this.selectedSeatIds.length === 0) {
       this.errorMessage = 'Please select at least one seat.';
@@ -150,7 +94,6 @@ export class SeatSelectionComponent implements OnInit {
     // Use forkJoin to wait for all bookings
     forkJoin(bookingRequests).subscribe({
       next: (tickets: Ticket[]) => {
-        console.log('Booking successful! Tickets received:', tickets);
         this.successMessage = `Booking successful! ${tickets.length} seat(s) booked.`;
         this.bookingInProgress = false;
         
@@ -160,16 +103,12 @@ export class SeatSelectionComponent implements OnInit {
           seatLabel: this.seatLabelsMap.get(this.selectedSeatIds[index]) || ticket.seatNumber
         }));
         
-        console.log('Tickets with labels:', ticketsWithLabels);
-        console.log('Seat labels map:', Array.from(this.seatLabelsMap.entries()));
-        
         // Navigate to success page with tickets and labels
         setTimeout(() => {
-          console.log('Navigating to booking-success with state...');
           this.router.navigate(['/booking-success'], { 
             state: { 
               tickets: ticketsWithLabels,
-              seatLabelsMap: Array.from(this.seatLabelsMap.entries())  // Convert Map to array for navigation
+              seatLabelsMap: Array.from(this.seatLabelsMap.entries())
             }
           });
         }, 2000);
@@ -183,7 +122,6 @@ export class SeatSelectionComponent implements OnInit {
         this.loadBusDetails();
         this.selectedSeatIds = [];
         this.selectedSeats = [];
-        this.selectedSeat = null;
         this.selectedSeat = null;
       }
     });
@@ -218,27 +156,10 @@ export class SeatSelectionComponent implements OnInit {
     });
   }
 
-  // Helper methods for seat-map component
-  getBookedSeats(): string[] {
-    if (!this.busDetails?.seats) return [];
-    const booked = this.busDetails.seats
-      .filter(s => s.status === SeatStatus.Booked || s.status === SeatStatus.Sold)
-      .map(s => s.seatNumber);
-    console.log('Booked seats from API:', booked);
-    console.log('All seats from API:', this.busDetails.seats.map(s => `${s.seatNumber} (status: ${s.status})`));
-    return booked;
-  }
-
   onSeatsChanged(seatIds: string[]): void {
-    console.log('=== onSeatsChanged ===');
-    console.log('Received seat IDs:', seatIds);
-    
     if (!this.busDetails?.seats) return;
     
-    // Store seat IDs for booking
     this.selectedSeatIds = seatIds;
-    
-    // Find seats by ID and use the labels map
     const selectedSeatObjects = this.busDetails.seats.filter(s => seatIds.includes(s.id));
     
     // Use labels from the map if available, otherwise use seat numbers
@@ -248,14 +169,9 @@ export class SeatSelectionComponent implements OnInit {
     
     // Update selectedSeat for backward compatibility
     this.selectedSeat = selectedSeatObjects.length > 0 ? selectedSeatObjects[0] : null;
-    
-    console.log('Selected seats:', this.selectedSeats);
-    console.log('Selected seat objects:', selectedSeatObjects);
   }
 
   onSeatLabelsChanged(labelsMap: Map<string, string>): void {
-    console.log('=== onSeatLabelsChanged ===');
-    console.log('Received labels map:', labelsMap);
     this.seatLabelsMap = labelsMap;
     
     // Update selected seats display if any are selected

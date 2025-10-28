@@ -7,8 +7,8 @@ namespace BusTicketReservation.Infrastructure.Repositories;
 public class Repository<TEntity, TKey>:IRepository<TEntity, TKey> 
     where TEntity : class, IEntity<TKey>
 {
-    private DbContext _context;
-    private DbSet<TEntity> _dbSet;
+    private readonly DbContext _context;
+    private readonly DbSet<TEntity> _dbSet;
 
     public Repository(AppDbContext context)
     {
@@ -32,9 +32,10 @@ public class Repository<TEntity, TKey>:IRepository<TEntity, TKey>
         return entity;
     }
 
-    public virtual async Task UpdateAsync(TEntity entity)
+    public virtual Task UpdateAsync(TEntity entity)
     {
         _dbSet.Update(entity);
+        return Task.CompletedTask;
     }
 
     public virtual async Task DeleteAsync(TKey id)

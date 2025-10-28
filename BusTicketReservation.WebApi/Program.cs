@@ -72,12 +72,13 @@ try
         try
         {
             var context = services.GetRequiredService<AppDbContext>();
-            await BusTicketReservation.Infrastructure.Data.SeedData.InitializeAsync(context);
+            await context.Database.MigrateAsync(); // apply migrations
+            await BusTicketReservation.Infrastructure.Data.SeedData.InitializeAsync(context); // then seed
         }
         catch (Exception ex)
         {
             var logger = services.GetRequiredService<ILogger<Program>>();
-            logger.LogError(ex, "An error occurred while seeding the database.");
+            logger.LogError(ex, "An error occurred while migrating/seeding the database.");
         }
     }
 

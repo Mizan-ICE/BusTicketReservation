@@ -8,6 +8,10 @@
     {{ errorMessage }}
   </div>
 
+  <div class="success-alert" *ngIf="successMessage">
+    ✓ {{ successMessage }}
+  </div>
+
   <div class="success-page" *ngIf="!loading && ticket">
     <div class="success-animation">
       <div class="checkmark-circle">
@@ -109,8 +113,19 @@
           ℹ️ Please carry a valid ID proof during your journey
         </p>
         <p class="footer-note">
-          📞 For support, contact the bus operator
+          📞 For support, contact the bus Supervisor
         </p>
+      </div>
+
+      <!-- Cancel button for each ticket -->
+      <div class="ticket-actions no-print" *ngIf="canCancelTicket(tkt)">
+        <button 
+          class="btn btn-cancel" 
+          (click)="cancelTicket(tkt.id)"
+          [disabled]="isCancelling(tkt.id)">
+          <span *ngIf="!isCancelling(tkt.id)">❌ Cancel This Ticket</span>
+          <span *ngIf="isCancelling(tkt.id)">Cancelling...</span>
+        </button>
       </div>
     </div>
 
