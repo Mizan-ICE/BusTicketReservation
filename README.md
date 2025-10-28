@@ -1,4 +1,4 @@
-# Bus Ticket Reservation — Setup Guide
+# Bus Ticket Reservation â€” Setup Guide
 
 A .NET 9 Web API + Angular application for searching buses, visual seat selection, and ticket booking.
 
@@ -24,15 +24,9 @@ Optional:
 
 ## 1) Database Setup (PostgreSQL)
 
-Option A — Local PostgreSQL:
-- Create a database, e.g. `bus_ticket_reservation`
+Option A â€” Local PostgreSQL:
+- Create a database
 - Have a user with required privileges
-
-Option B — Docker:
-
-```bash
-docker run --name bus-ticket-reservation-postgres -e POSTGRES_DB=bus_ticket_reservation -e POSTGRES_USER=your_user -e POSTGRES_PASSWORD=your_password -p 5432:5432 -d postgres:13
-```
 
 Notes:
 - The API reads `ConnectionStrings:DefaultConnection`.
