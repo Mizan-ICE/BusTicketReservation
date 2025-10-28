@@ -1,0 +1,99 @@
+.seat-grid {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.aisle {
+  width: 24px; /* aisle gap width */
+}
+
+.seat {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px 10px 4px 4px; /* bus seat shape */
+  border: 2px solid #2d3748;
+  background: linear-gradient(180deg, #edf2f7 0%, #e2e8f0 100%);
+  color: #1a202c;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform .12s ease, background .2s ease, border-color .2s ease;
+  user-select: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,.1);
+  position: relative;
+}
+
+.seat::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 8px;
+  right: 8px;
+  height: 4px;
+  background: #cbd5e0;
+  border-radius: 2px;
+}
+
+.seat:hover:not(:disabled) { 
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,.15);
+}
+
+.seat .label { 
+  font-weight: 700; 
+  font-size: 13px;
+  z-index: 1;
+}
+
+.seat.selected {
+  background: linear-gradient(180deg, #48bb78 0%, #38a169 100%);
+  color: white;
+  border-color: #2f855a;
+}
+
+.seat.selected::before { background: #2f855a; }
+
+.seat.booked {
+  background: linear-gradient(180deg, #cbd5e0 0%, #a0aec0 100%);
+  color: #718096;
+  border-color: #a0aec0;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.seat.booked::before { background: #718096; }
+
+.legend {
+  margin-top: 16px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  color: #fff;
+  font-size: 14px;
+}
+
+.legend .dot {
+  display: inline-block;
+  width: 16px; 
+  height: 16px;
+  border-radius: 4px;
+  margin-right: 6px;
+  vertical-align: middle;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+
+.legend .available { background: linear-gradient(180deg, #edf2f7 0%, #e2e8f0 100%); }
+.legend .selected  { background: linear-gradient(180deg, #48bb78 0%, #38a169 100%); }
+.legend .booked    { background: linear-gradient(180deg, #cbd5e0 0%, #a0aec0 100%); }

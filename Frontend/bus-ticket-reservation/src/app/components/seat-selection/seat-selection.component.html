@@ -1,0 +1,211 @@
+<div class="container">
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading bus details...</p>
+  </div>
+
+  <div class="error-alert" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <div class="success-alert" *ngIf="successMessage">
+    ? {{ successMessage }}
+  </div>
+
+  <div *ngIf="!loading && busDetails">
+    <div class="bus-info-card">
+      <button class="btn-back" (click)="goBack()">
+        Back to Search
+      </button>
+
+      <div class="bus-header">
+        <div class="company-section">
+          <h1>{{ busDetails.companyName }}</h1>
+          <p class="bus-name">{{ busDetails.busName }} ({{ busDetails.busType }})</p>
+        </div>
+        <div class="price-section">
+          <span class="price-label">Fare</span>
+          <span class="price">?{{ busDetails.price }}</span>
+        </div>
+      </div>
+
+      <div class="journey-info">
+        <div class="route-section">
+          <div class="route-point">
+            <span class="icon">📍</span>
+            <div>
+              <p class="city">{{ busDetails.fromCity }}</p>
+              <p class="time">{{ formatTime(busDetails.startTime) }}</p>
+            </div>
+          </div>
+          
+          <div class="route-line">
+            <div class="arrow">→</div>
+          </div>
+          
+          <div class="route-point">
+            <span class="icon">📍</span>
+            <div>
+              <p class="city">{{ busDetails.toCity }}</p>
+              <p class="time">{{ formatTime(busDetails.arrivalTime) }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="date-section">
+          <span class="icon">📅</span>
+          <span>{{ formatDate(busDetails.journeyDate) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="seat-section">
+        <h2>🪑 Select Your Seat</h2>
+        
+        <div class="seat-legend">
+          <div class="legend-item">
+            <span class="seat available-demo">💺</span>
+            <span>Available</span>
+          </div>
+          <div class="legend-item">
+            <span class="seat selected-demo">✓</span>
+            <span>Selected</span>
+          </div>
+          <div class="legend-item">
+            <span class="seat booked-demo">🔒</span>
+            <span>Booked</span>
+          </div>
+          <div class="legend-item">
+            <span class="seat sold-demo">✖</span>
+            <span>Sold</span>
+          </div>
+        </div>
+
+        <div class="bus-layout">
+          <div class="steering">🚗 Driver</div>
+          
+          <app-seat-map
+            [seats]="busDetails.seats"
+            [multiSelect]="true"
+            (selectionChange)="onSeatsChanged($event)"
+            (seatLabelsChange)="onSeatLabelsChanged($event)">
+          </app-seat-map>
+        </div>
+
+        <div class="selected-seat-info" *ngIf="selectedSeats.length > 0">
+          <div class="info-badge">
+            <strong>Selected Seat:</strong> {{ selectedSeats.join(', ') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="booking-section">
+        <h2>📝 Booking Details</h2>
+        
+        <form [formGroup]="bookingForm" (ngSubmit)="onBookTicket()">
+          <div class="form-group">
+            <label for="passengerName">
+              <i class="icon">👤</i> Passenger Name *
+            </label>
+            <input 
+              type="text" 
+              id="passengerName" 
+              formControlName="passengerName"
+              class="form-control"
+              placeholder="Enter full name"
+              [class.error]="bookingForm.get('passengerName')?.invalid && bookingForm.get('passengerName')?.touched">
+            <div class="error-message" *ngIf="bookingForm.get('passengerName')?.invalid && bookingForm.get('passengerName')?.touched">
+              <span *ngIf="bookingForm.get('passengerName')?.errors?.['required']">Name is required</span>
+              <span *ngIf="bookingForm.get('passengerName')?.errors?.['minlength']">Name must be at least 2 characters</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="mobileNumber">
+              📱 Mobile Number *
+            </label>
+            <input 
+              type="tel" 
+              id="mobileNumber" 
+              formControlName="mobileNumber"
+              class="form-control"
+              placeholder="+8801XXXXXXXXX"
+              [class.error]="bookingForm.get('mobileNumber')?.invalid && bookingForm.get('mobileNumber')?.touched">
+            <div class="error-message" *ngIf="bookingForm.get('mobileNumber')?.invalid && bookingForm.get('mobileNumber')?.touched">
+              <span *ngIf="bookingForm.get('mobileNumber')?.errors?.['required']">Mobile number is required</span>
+              <span *ngIf="bookingForm.get('mobileNumber')?.errors?.['pattern']">Please enter a valid phone number</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="boardingPoint">
+              🚏 Boarding Point *
+            </label>
+            <select 
+              id="boardingPoint" 
+              formControlName="boardingPoint"
+              class="form-control"
+              [class.error]="bookingForm.get('boardingPoint')?.invalid && bookingForm.get('boardingPoint')?.touched">
+              <option value="">Select boarding point</option>
+              <option *ngFor="let point of busDetails.boardingPoints" [value]="point">
+                {{ point }}
+              </option>
+            </select>
+            <div class="error-message" *ngIf="bookingForm.get('boardingPoint')?.invalid && bookingForm.get('boardingPoint')?.touched">
+              Please select a boarding point
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="droppingPoint">
+              🏁 Dropping Point *
+            </label>
+            <select 
+              id="droppingPoint" 
+              formControlName="droppingPoint"
+              class="form-control"
+              [class.error]="bookingForm.get('droppingPoint')?.invalid && bookingForm.get('droppingPoint')?.touched">
+              <option value="">Select dropping point</option>
+              <option *ngFor="let point of busDetails.droppingPoints" [value]="point">
+                {{ point }}
+              </option>
+            </select>
+            <div class="error-message" *ngIf="bookingForm.get('droppingPoint')?.invalid && bookingForm.get('droppingPoint')?.touched">
+              Please select a dropping point
+            </div>
+          </div>
+
+          <div class="booking-summary" *ngIf="selectedSeats.length > 0">
+            <h3>Booking Summary</h3>
+            <div class="summary-item">
+              <span>Seat Number:</span>
+              <strong>{{ selectedSeats.join(', ') }}</strong>
+            </div>
+            <div class="summary-item">
+              <span>Fare:</span>
+              <strong>?{{ busDetails.price }}</strong>
+            </div>
+            <div class="summary-divider"></div>
+            <div class="summary-item total">
+              <span>Total Amount:</span>
+              <strong>?{{ busDetails.price * selectedSeats.length }}</strong>
+            </div>
+          </div>
+
+          <button 
+            type="submit" 
+            class="btn btn-book"
+            [disabled]="selectedSeats.length === 0 || bookingForm.invalid || bookingInProgress">
+            <span *ngIf="!bookingInProgress">
+              {{ selectedSeats.length > 0 ? 'Confirm Booking' : 'Select a Seat First' }}
+            </span>
+            <span *ngIf="bookingInProgress">
+              Processing Booking...
+            </span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

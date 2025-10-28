@@ -1,0 +1,126 @@
+<div class="container">
+  <div class="loading-spinner" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading ticket details...</p>
+  </div>
+
+  <div class="error-alert" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <div class="success-page" *ngIf="!loading && ticket">
+    <div class="success-animation">
+      <div class="checkmark-circle">
+        <div class="checkmark">✓</div>
+      </div>
+      <h1>Booking Confirmed!</h1>
+      <p *ngIf="tickets.length === 1">Your ticket has been successfully booked</p>
+      <p *ngIf="tickets.length > 1">Your {{ tickets.length }} tickets have been successfully booked</p>
+    </div>
+
+    <div class="ticket-card" *ngFor="let tkt of tickets; let i = index" id="ticket-print-{{i}}">
+      <div class="ticket-header">
+        <div class="ticket-logo">🎫</div>
+        <div class="ticket-title">
+          <h2>E-Ticket {{ tickets.length > 1 ? '#' + (i + 1) : '' }}</h2>
+          <p class="ticket-id">ID: {{ tkt.id }}</p>
+        </div>
+        <div [class]="'status-badge ' + getStatusClass(tkt.status)">
+          {{ getStatusText(tkt.status) }}
+        </div>
+      </div>
+
+      <div class="ticket-divider"></div>
+
+      <div class="ticket-body">
+        <div class="company-info">
+          <h3>{{ tkt.companyName }}</h3>
+          <p>{{ tkt.busName }}</p>
+        </div>
+
+        <div class="journey-details">
+          <div class="journey-row">
+            <div class="journey-point">
+              <span class="label">From</span>
+              <span class="value">{{ tkt.fromCity }}</span>
+              <span class="boarding">Boarding: {{ tkt.boardingPoint }}</span>
+            </div>
+
+            <div class="journey-arrow">
+              <div class="arrow-line"></div>
+              <div class="arrow-head">→</div>
+            </div>
+
+            <div class="journey-point">
+              <span class="label">To</span>
+              <span class="value">{{ tkt.toCity }}</span>
+              <span class="dropping">Dropping: {{ tkt.droppingPoint }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ticket-details-grid">
+          <div class="detail-item">
+            <span class="detail-label">📅 Journey Date</span>
+            <span class="detail-value">{{ formatDate(tkt.journeyDate) }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">🕐 Departure Time</span>
+            <span class="detail-value">{{ formatTime(tkt.startTime) }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">🕐 Arrival Time</span>
+            <span class="detail-value">{{ formatTime(tkt.arrivalTime) }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">💺 Seat Number</span>
+            <span class="detail-value seat-highlight">{{ getSeatLabel(tkt) }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">👤 Passenger Name</span>
+            <span class="detail-value">{{ tkt.passengerName }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">📱 Mobile Number</span>
+            <span class="detail-value">{{ tkt.mobileNumber }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">📅 Booking Date</span>
+            <span class="detail-value">{{ formatDate(tkt.bookingDate) }}</span>
+          </div>
+
+          <div class="detail-item price-item">
+            <span class="detail-label">💰 Fare</span>
+            <span class="detail-value price-value">৳{{ tkt.price }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ticket-divider"></div>
+
+      <div class="ticket-footer">
+        <p class="footer-note">
+          ℹ️ Please carry a valid ID proof during your journey
+        </p>
+        <p class="footer-note">
+          📞 For support, contact the bus operator
+        </p>
+      </div>
+    </div>
+
+    <div class="action-buttons no-print">
+      <button class="btn btn-print" (click)="printTicket()">
+        🖨️ Print Ticket
+      </button>
+      <button class="btn btn-home" (click)="goToHome()">
+        🚌 Book Another Ticket
+      </button>
+    </div>
+  </div>
+</div>

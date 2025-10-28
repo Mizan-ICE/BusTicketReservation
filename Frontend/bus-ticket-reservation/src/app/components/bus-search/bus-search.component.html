@@ -1,0 +1,137 @@
+<div class="container">
+  <div class="search-section">
+    <h1> Bus Ticket Reservation</h1>
+    <p class="subtitle">Find and book your bus tickets easily</p>
+
+    <div class="search-card">
+      <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="from">
+               From City
+            </label>
+            <select 
+              id="from" 
+              formControlName="from" 
+              class="form-control"
+              [class.error]="searchForm.get('from')?.invalid && searchForm.get('from')?.touched">
+              <option value="">Select departure city</option>
+              <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
+            </select>
+            <div class="error-message" *ngIf="searchForm.get('from')?.invalid && searchForm.get('from')?.touched">
+              Please select a departure city
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="to">
+               To City
+            </label>
+            <select 
+              id="to" 
+              formControlName="to" 
+              class="form-control"
+              [class.error]="searchForm.get('to')?.invalid && searchForm.get('to')?.touched">
+              <option value="">Select destination city</option>
+              <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
+            </select>
+            <div class="error-message" *ngIf="searchForm.get('to')?.invalid && searchForm.get('to')?.touched">
+              Please select a destination city
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="journeyDate">
+               Journey Date
+            </label>
+            <input 
+              type="date" 
+              id="journeyDate" 
+              formControlName="journeyDate" 
+              class="form-control"
+              [class.error]="searchForm.get('journeyDate')?.invalid && searchForm.get('journeyDate')?.touched">
+            <div class="error-message" *ngIf="searchForm.get('journeyDate')?.invalid && searchForm.get('journeyDate')?.touched">
+              Please select a journey date
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button 
+              type="submit" 
+              class="btn btn-primary" 
+              [disabled]="loading">
+              <span *ngIf="!loading">Search Buses</span>
+              <span *ngIf="loading">Searching...</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="error-alert" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <div class="results-section" *ngIf="searched">
+    <h2>Available Buses</h2>
+    
+    <div class="loading-spinner" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Searching for available buses...</p>
+    </div>
+
+    <div class="no-results" *ngIf="!loading && availableBuses.length === 0">
+      <div class="no-results-icon">🚌</div>
+      <p>No buses available for this route and date.</p>
+      <p class="hint">Try selecting a different date or route.</p>
+    </div>
+
+    <div class="bus-grid" *ngIf="!loading && availableBuses.length > 0">
+      <div class="bus-card" *ngFor="let bus of availableBuses">
+        <div class="bus-header">
+          <div class="company-info">
+            <h3>{{ bus.companyName }}</h3>
+            <p class="bus-name">{{ bus.busName }}</p>
+          </div>
+          <div class="price-tag">
+            <span class="currency">৳</span>
+            <span class="amount">{{ bus.price }}</span>
+          </div>
+        </div>
+
+        <div class="bus-details">
+          <div class="time-info">
+            <div class="time-block">
+              <span class="label">Departure</span>
+              <span class="time">{{ formatTime(bus.startTime) }}</span>
+            </div>
+            <div class="journey-line">
+              <span class="dot"></span>
+              <span class="line"></span>
+              <span class="dot"></span>
+            </div>
+            <div class="time-block">
+              <span class="label">Arrival</span>
+              <span class="time">{{ formatTime(bus.arrivalTime) }}</span>
+            </div>
+          </div>
+
+          <div class="seats-info">
+            <span class="seats-icon">💺</span>
+            <span class="seats-count">{{ bus.seatsLeft }} seats left</span>
+          </div>
+        </div>
+
+        <div class="bus-footer">
+          <button 
+            class="btn btn-view-seats" 
+            (click)="viewSeats(bus.busScheduleId)">
+            View Seats & Book
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

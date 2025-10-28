@@ -1,0 +1,388 @@
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 60px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-alert {
+  background: #fee;
+  color: #c33;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid #e74c3c;
+}
+
+.success-page {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.success-animation {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.checkmark-circle {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.checkmark {
+  color: white;
+  font-size: 3em;
+  font-weight: bold;
+  animation: checkmark 0.8s ease-out 0.3s both;
+}
+
+@keyframes checkmark {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(-45deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.success-animation h1 {
+  color: #2c3e50;
+  font-size: 2.5em;
+  margin: 0 0 10px 0;
+}
+
+.success-animation p {
+  color: #7f8c8d;
+  font-size: 1.2em;
+}
+
+.ticket-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.ticket-card:not(:last-of-type) {
+  margin-bottom: 20px;
+}
+
+.ticket-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 25px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.ticket-logo {
+  font-size: 3em;
+}
+
+.ticket-title h2 {
+  margin: 0 0 5px 0;
+  font-size: 1.8em;
+}
+
+.ticket-id {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 0.85em;
+  font-family: monospace;
+}
+
+.status-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.status-confirmed {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.status-pending {
+  background: rgba(255, 193, 7, 0.3);
+  color: white;
+}
+
+.status-cancelled {
+  background: rgba(244, 67, 54, 0.3);
+  color: white;
+}
+
+.ticket-divider {
+  height: 2px;
+  background: repeating-linear-gradient(
+    to right,
+    #e0e0e0,
+    #e0e0e0 10px,
+    transparent 10px,
+    transparent 20px
+  );
+}
+
+.ticket-body {
+  padding: 30px;
+}
+
+.company-info {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.company-info h3 {
+  margin: 0 0 5px 0;
+  color: #2c3e50;
+  font-size: 1.8em;
+}
+
+.company-info p {
+  margin: 0;
+  color: #7f8c8d;
+  font-size: 1.1em;
+}
+
+.journey-details {
+  margin-bottom: 30px;
+}
+
+.journey-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.journey-point {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.journey-point .label {
+  font-size: 0.85em;
+  color: #7f8c8d;
+  margin-bottom: 5px;
+}
+
+.journey-point .value {
+  font-size: 1.5em;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+.journey-point .boarding,
+.journey-point .dropping {
+  font-size: 0.9em;
+  color: #3498db;
+  font-weight: 500;
+}
+
+.journey-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 20px;
+}
+
+.arrow-line {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(to right, #3498db, #2ecc71);
+}
+
+.arrow-head {
+  font-size: 2em;
+  color: #2ecc71;
+  margin-top: -10px;
+}
+
+.ticket-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+.detail-label {
+  font-size: 0.85em;
+  color: #7f8c8d;
+  margin-bottom: 5px;
+}
+
+.detail-value {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.seat-highlight {
+  color: #e74c3c;
+  font-size: 1.4em;
+}
+
+.price-item {
+  border-left-color: #27ae60;
+}
+
+.price-value {
+  color: #27ae60;
+  font-size: 1.5em;
+}
+
+.ticket-footer {
+  padding: 20px 30px;
+  background: #f8f9fa;
+  text-align: center;
+}
+
+.footer-note {
+  margin: 5px 0;
+  color: #7f8c8d;
+  font-size: 0.9em;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.btn {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-print {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+}
+
+.btn-print:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(52, 152, 219, 0.4);
+}
+
+.btn-home {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: white;
+}
+
+.btn-home:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(46, 204, 113, 0.4);
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .ticket-card {
+    box-shadow: none;
+    border: 2px solid #ddd;
+  }
+
+  body {
+    background: white;
+  }
+}
+
+@media (max-width: 768px) {
+  .ticket-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+
+  .journey-row {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .journey-arrow {
+    transform: rotate(90deg);
+    margin: 10px 0;
+  }
+
+  .ticket-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

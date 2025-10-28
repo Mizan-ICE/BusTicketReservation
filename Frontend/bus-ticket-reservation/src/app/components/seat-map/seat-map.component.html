@@ -1,0 +1,28 @@
+<div class="seat-grid" role="grid" aria-label="Seat map">
+  <div class="row" *ngFor="let row of seatLayout; trackBy: trackByIndex" role="row">
+    <ng-container *ngFor="let item of row; trackBy: trackByIndex">
+      <!-- Aisle gap -->
+      <div class="aisle" *ngIf="item.isAisle"></div>
+      
+      <!-- Seat button -->
+      <button
+        *ngIf="!item.isAisle"
+        [class]="getSeatClass(item.seat)"
+        [disabled]="disabled || isBooked(item.seat)"
+        (click)="toggleSeat(item.seat)"
+        role="gridcell"
+        [attr.aria-label]="'Seat ' + item.label"
+        [attr.aria-selected]="isSelected(item.seat)"
+        [title]="isBooked(item.seat) ? 'Booked' : 'Available'"
+      >
+        <span class="label">{{ item.label }}</span>
+      </button>
+    </ng-container>
+  </div>
+</div>
+
+<div class="legend">
+  <span class="dot available"></span> Available
+  <span class="dot selected"></span> Selected
+  <span class="dot booked"></span> Booked
+</div>
