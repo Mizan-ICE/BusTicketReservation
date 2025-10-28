@@ -17,10 +17,13 @@ public class UnitOfWork : IUnitOfWork
 
     public IBusScheduleRepository BusSchedules { get; private set; }
 
-    
-
     public async Task SaveChangesAsync()
     {
        await _context.SaveChangesAsync();
+    }
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return await _context.Database.BeginTransactionAsync();
     }
 }

@@ -13,6 +13,16 @@ public class BusScheduleRepository : Repository<BusSchedule, Guid>, IBusSchedule
         _context = context;
     }
 
+    public override async Task<BusSchedule?> GetByIdAsync(Guid id)
+    {
+        return await _context.Set<BusSchedule>()
+            .Include(bs => bs.Bus)
+                .ThenInclude(b => b.Seats)
+            .Include(bs => bs.Route)
+            .Include(bs => bs.Tickets)
+            .FirstOrDefaultAsync(bs => bs.Id == id);
+    }
+
     public async Task<List<BusSchedule>> GetSchedulesByRouteAndDateAsync(
         string fromCity, 
         string toCity, 
@@ -20,6 +30,7 @@ public class BusScheduleRepository : Repository<BusSchedule, Guid>, IBusSchedule
     {
         return await _context.Set<BusSchedule>()
             .Include(bs => bs.Bus)
+                .ThenInclude(b => b.Seats)
             .Include(bs => bs.Route)
             .Include(bs => bs.Tickets)
             .Where(bs => bs.Route.FromCity == fromCity 

@@ -41,8 +41,8 @@ public class BusController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error searching for available buses");
-            return StatusCode(500, new { message = "An error occurred while searching for buses." });
+            _logger.LogError(ex, "Invalid search");
+            return StatusCode(500, new { message = "An error occurred while searching" });
         }
     }
 }

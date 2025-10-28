@@ -154,6 +154,14 @@ namespace BusTicketReservation.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("MobileNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PassengerName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<Guid>("SeatId")
                         .HasColumnType("uuid");
 

@@ -2,6 +2,11 @@ namespace BusTicketReservation.Domain.Entities;
 
 public sealed class BusSchedule: IEntity<Guid>
 {
+    public BusSchedule()
+    {
+        Tickets = new List<Ticket>();
+    }
+
     public Guid Id { get; set; }
     public Guid BusId { get; set; }
     public Guid RouteId { get; set; }
@@ -10,7 +15,7 @@ public sealed class BusSchedule: IEntity<Guid>
     public TimeSpan ArrivalTime { get; set; }
     public decimal Price { get; set; }
 
-    public  Bus Bus { get; set; }
-    public  Route Route { get; set; }
-    public  ICollection<Ticket> Tickets { get; set; }
+    public Bus Bus { get; set; }
+    public Route Route { get; set; }
+    public ICollection<Ticket> Tickets { get; set; }
 }

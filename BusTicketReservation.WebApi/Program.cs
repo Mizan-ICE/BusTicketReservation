@@ -37,6 +37,7 @@ try
 
     builder.Services.AddScoped<IBusScheduleRepository, BusScheduleRepository>();
     builder.Services.AddScoped<ISearchService, SearchService>();
+    builder.Services.AddScoped<IBookingService, BookingService>();
     builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
@@ -45,7 +46,13 @@ try
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
+   
+    builder.Services.AddCors(o => o.AddDefaultPolicy(p =>
+        p.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod()));
+
     var app = builder.Build();
+
+    app.UseCors();
 
     if (app.Environment.IsDevelopment())
     {
@@ -57,7 +64,6 @@ try
     app.UseAuthorization();
     app.MapControllers();
 
-    // Redirect root to Swagger to avoid 404 on /
     app.MapGet("/", () => Results.Redirect("/swagger"));
 
     using (var scope = app.Services.CreateScope())

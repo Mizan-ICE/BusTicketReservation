@@ -54,17 +54,17 @@ public class AppDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Price)
                 .HasColumnType("decimal(18,2)");
-            entity.Property(e => e.JourneyDate).HasColumnType("date"); // map as date
+            entity.Property(e => e.JourneyDate).HasColumnType("date");
             entity.HasMany(e => e.Tickets)
                 .WithOne(e => e.BusSchedule)
                 .HasForeignKey(e => e.BusScheduleId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
-        modelBuilder.Entity<BusSchedule>(entity =>
+
         modelBuilder.Entity<Seat>(entity =>
         {
             entity.HasKey(e => e.Id);
-        }));
+        });
 
         modelBuilder.Entity<Ticket>(entity =>
         {

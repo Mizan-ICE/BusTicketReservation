@@ -1,4 +1,5 @@
 using BusTicketReservation.Application.Contracts.Repositories;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BusTicketReservation.Application.Contracts;
 
@@ -8,4 +9,5 @@ public interface IUnitOfWork
     
     Task SaveChangesAsync();
     
+    Task<IDbContextTransaction> BeginTransactionAsync();
 }

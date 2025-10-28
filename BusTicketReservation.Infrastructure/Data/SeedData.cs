@@ -7,16 +7,13 @@ public class SeedData
 {
     public static async Task InitializeAsync(AppDbContext context)
     {
-        // Ensure database is created
         await context.Database.EnsureCreatedAsync();
 
-        // Check if data already exists
         if (await context.Buses.AnyAsync())
         {
-            return; // Database has been seeded
+            return; 
         }
 
-        // Seed Buses
         var buses = new List<Bus>
         {
            new Bus
@@ -155,26 +152,24 @@ public class SeedData
         await context.Routes.AddRangeAsync(routes);
         await context.SaveChangesAsync();
 
-        // Seed Bus Schedules
         var schedules = new List<BusSchedule>();
         var random = new Random();
-        // Use a UTC base date so Kind=Utc propagates to JourneyDate
+       
         var baseDate = DateTime.SpecifyKind(DateTime.UtcNow.Date, DateTimeKind.Utc);
 
-        for (int day = 0; day < 7; day++) // Create schedules for next 7 days
+        for (int day = 0; day < 7; day++) 
         {
             for (int i = 0; i < routes.Count; i++)
             {
                 var bus = buses[i % buses.Count];
                 var route = routes[i];
 
-                // Morning schedule
                 schedules.Add(new BusSchedule
                 {
                     Id = Guid.NewGuid(),
                     BusId = bus.Id,
                     RouteId = route.Id,
-                    JourneyDate = baseDate.AddDays(day), // stays UTC
+                    JourneyDate = baseDate.AddDays(day), 
                     StartTime = new TimeSpan(6, 0, 0),
                     ArrivalTime = new TimeSpan(12, 30, 0),
                     Price = 45.00m + (random.Next(0, 20) * 5)

@@ -7,6 +7,8 @@ public sealed class Ticket:IEntity<Guid>
     public Guid Id { get; set; }
     public Guid BusScheduleId { get; set; }
     public Guid SeatId { get; set; }
+    public string PassengerName { get; set; }
+    public string MobileNumber { get; set; }
     public string BoardingPoint { get; set; }
     public string DroppingPoint { get; set; }
     public DateTime BookingDate { get; set; }

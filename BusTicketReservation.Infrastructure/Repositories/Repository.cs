@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BusTicketReservation.Infrastructure.Repositories;
 
-public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> 
+public class Repository<TEntity, TKey>:IRepository<TEntity, TKey> 
     where TEntity : class, IEntity<TKey>
 {
     private DbContext _context;

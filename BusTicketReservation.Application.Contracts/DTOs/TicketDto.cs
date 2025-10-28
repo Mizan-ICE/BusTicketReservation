@@ -14,6 +14,8 @@ public class TicketDto
     public TimeSpan StartTime { get; set; }
     public TimeSpan ArrivalTime { get; set; }
     public string SeatNumber { get; set; }
+    public string PassengerName { get; set; }
+    public string MobileNumber { get; set; }
     public string BoardingPoint { get; set; }
     public string DroppingPoint { get; set; }
     public decimal Price { get; set; }
