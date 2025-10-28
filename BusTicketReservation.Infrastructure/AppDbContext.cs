@@ -19,14 +19,13 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Configure table names (PostgreSQL convention: lowercase with underscores)
+    
         modelBuilder.Entity<Bus>().ToTable("buses");
         modelBuilder.Entity<Route>().ToTable("routes");
         modelBuilder.Entity<BusSchedule>().ToTable("bus_schedules");
         modelBuilder.Entity<Seat>().ToTable("seats");
         modelBuilder.Entity<Ticket>().ToTable("tickets");
 
-        // Configure relationships
         modelBuilder.Entity<Bus>(entity =>
         {
             entity.HasKey(e => e.Id);

@@ -30,7 +30,6 @@ public class SearchService : ISearchService
             to,
             requestedDate);
 
-        // If searching for today, exclude already departed schedules
         if (requestedDate == todayUtc)
         {
             var nowUtcTime = DateTime.UtcNow.TimeOfDay;

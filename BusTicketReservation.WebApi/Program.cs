@@ -24,12 +24,14 @@ try
     Log.Information("Starting up the application...");
     var builder = WebApplication.CreateBuilder(args);
 
+    #region Serilog Configuration
     builder.Host.UseSerilog((context, lc) => lc
     .MinimumLevel.Debug()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
     .Enrich.FromLogContext()
     .ReadFrom.Configuration(builder.Configuration)
     );
+    #endregion
 
     builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -72,8 +74,8 @@ try
         try
         {
             var context = services.GetRequiredService<AppDbContext>();
-            await context.Database.MigrateAsync(); // apply migrations
-            await BusTicketReservation.Infrastructure.Data.SeedData.InitializeAsync(context); // then seed
+            await context.Database.MigrateAsync(); 
+            await BusTicketReservation.Infrastructure.Data.SeedData.InitializeAsync(context); 
         }
         catch (Exception ex)
         {
